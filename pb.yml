@@ -1,0 +1,16 @@
+- name: Deploy the Application
+  hosts: web
+  become: yes
+  vars:
+    app_dir: /usr/share/nginx/html/
+    git_repo: https://github.com/rotoro-cloud/Laravel-Real-Estate-Venue-Portal.git
+    db_name: appDb
+    mysql_user_name: root
+    mysql_user_password: PsVV0rd
+    service_user: nginx
+    service_group: nginx
+    php_repo: remi-php74
+  roles:
+#    - role: mysql-role
+#    - role: nginx-php-fpm-role
+    - role: estate-app-role
