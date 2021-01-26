@@ -60,7 +60,7 @@
     state: absent
 
 - name: Run artisan storage link creation
-  shell: php "{{ app_dir }}/artisan storage:link"
+  shell: "php {{ app_dir }}/artisan storage:link"
 #  sudo: yes
 
 - name: Change dir ownership
@@ -86,3 +86,6 @@
     state: directory
     recurse: yes
     mode: o+rwx
+
+- name: restart nginx
+  service: name=nginx state=restarted
