@@ -86,6 +86,11 @@
     state: directory
     recurse: yes
     mode: o+rwx
+    
+- name: add nginx virtualhost config
+  template:
+    src=templates/default.conf
+    dest=/etc/nginx/conf.d/default.conf
 
 - name: restart nginx
   service: name=nginx state=restarted
