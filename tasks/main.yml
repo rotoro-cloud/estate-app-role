@@ -1,0 +1,80 @@
+- name: Install Git
+  package: name=git state=present
+
+- name: Install Git
+  git:
+    repo: "{{ git_repo }}"
+    dest: "{{ app_dir }}"
+    
+- name: Create .env file
+  ansible.builtin.copy:
+    src: {{ app_dir }}/.env.example
+    dest: {{ app_dir }}/.env
+    remote_src: yes
+
+- name: Setup Database Name
+  lineinfile:
+    path: {{ app_dir }}/.env
+    regexp: '^DB_DATABASE='
+    line: "DB_DATABASE={{ db_name }}"
+
+- name: Setup Database User
+  lineinfile:
+    path: {{ app_dir }}/.env
+    regexp: '^DB_USERNAME='
+    line: "DB_USERNAME={{ mysql_user_name }}"
+
+- name: Setup Database Pass
+  lineinfile:
+    path: {{ app_dir }}/.env
+    regexp: '^DB_PASSWORD='
+    line: "DB_PASSWORD={{ mysql_user_password }}"
+
+- name: Install Composer
+  package: name=composer state=present
+
+- name: Download and installs all libs and dependencies
+  community.general.composer:
+    command: install
+    working_dir: "{{ app_dir }}"
+
+- name: Run artisan migrate
+  shell: php {{ app_dir }}/artisan key:generate 
+  sudo: yes
+
+- name: Run artisan data filling
+  shell: php {{ app_dir }}/artisan migrate --seed
+  sudo: yes
+
+- name: Ensure no invalin symlink
+  file:
+    path: {{ app_dir }}/public/storage
+    state: absent
+
+- name: Run artisan storage link creation
+  shell: php {{ app_dir }}/artisan storage:link
+  sudo: yes
+
+- name: Change dir ownership
+  file:
+    path: "{{ app_dir }}"
+    state: directory
+    recurse: yes
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+
+- name: Change permissions storage and cache
+  file:
+    path: 
+      - {{ app_dir }}/storage
+      - {{ app_dir }}/bootstrap/cache
+    state: directory
+    recurse: yes
+    mode: ug+rwx
+
+- name: Change permissions logs
+  file:
+    path: {{ app_dir }}/logs
+    state: directory
+    recurse: yes
+    mode: o+rwx
