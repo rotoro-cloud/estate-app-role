@@ -5,7 +5,7 @@
     app_dir: /usr/share/nginx/html/
     git_repo: https://github.com/rotoro-cloud/Laravel-Real-Estate-Venue-Portal.git
     db_name: appDb
-    mysql_user_name: username
+    mysql_user_name: 'username'@'localhost'
     mysql_user_password: Password
     service_user: nginx
     service_group: nginx
