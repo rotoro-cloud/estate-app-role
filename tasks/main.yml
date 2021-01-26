@@ -2,13 +2,13 @@
   package: name=git state=present
 
 
-- name: Ensure no invalid symlink
+- name: Remove invalid symlink
   file:
     path: "{{ app_dir }}"
     state: absent
 
 
-- name: Install Git
+- name: Clone Code
   git:
     repo: "{{ git_repo }}"
     dest: "{{ app_dir }}"
@@ -48,20 +48,17 @@
 
 - name: Run artisan migrate
   shell: "php {{ app_dir }}/artisan key:generate"
-#  sudo: yes
 
 - name: Run artisan data filling
   shell: "php {{ app_dir }}/artisan migrate --seed"
-#  sudo: yes
 
-- name: Ensure no invalid symlink
+- name: Remove invalid symlink
   file:
     path: "{{ app_dir }}/public/storage"
     state: absent
 
 - name: Run artisan storage link creation
   shell: "php {{ app_dir }}/artisan storage:link"
-#  sudo: yes
 
 - name: Change dir ownership
   file:
