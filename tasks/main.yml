@@ -44,6 +44,7 @@
   community.general.composer:
     command: install
     working_dir: "{{ app_dir }}"
+    no_dev: no
 
 - name: Run artisan migrate
   shell: "php {{ app_dir }}/artisan key:generate"
