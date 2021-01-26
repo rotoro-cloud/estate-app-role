@@ -2,7 +2,7 @@
   hosts: web
   become: yes
   vars:
-    app_dir: /usr/share/nginx/html
+    app_dir: /usr/share/nginx/html/
     git_repo: https://github.com/rotoro-cloud/Laravel-Real-Estate-Venue-Portal.git
     db_name: appDb
     mysql_user_name: username
